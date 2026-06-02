@@ -1,0 +1,86 @@
+---
+const images = [
+  {
+    url: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=800&q=80',
+    label: 'Cortes Modernos',
+    span: 'row-span-2',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=800&q=80',
+    label: 'Diseño de Barba',
+    span: '',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80',
+    label: 'Ambiente Premium',
+    span: '',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1587909209111-5097ee578ec3?w=800&q=80',
+    label: 'Estilo Clásico',
+    span: '',
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?w=800&q=80',
+    label: 'Arte en Detalle',
+    span: '',
+  },
+];
+---
+<section class="py-24 px-8" id="galeria">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="flex flex-col md:flex-row md:items-end justify-between mb-14 gap-6" data-reveal>
+      <div>
+        <p class="text-brand-orange text-xs font-semibold tracking-[0.4em] uppercase mb-3">— Nuestro Trabajo</p>
+        <h2 class="font-heading text-4xl md:text-5xl font-bold text-white">Estilo en <span class="italic text-brand-gold">Acción</span></h2>
+      </div>
+      <p class="text-sm text-gray-400 max-w-xs leading-relaxed">
+        Cada corte es una obra. Cada cliente, un lienzo. Descubre lo que podemos hacer por tu imagen.
+      </p>
+    </div>
+
+    <!-- Masonry-style grid -->
+    <div class="grid grid-cols-2 md:grid-cols-3 grid-rows-2 gap-3 h-[600px]">
+      <!-- Large left image -->
+      <div class="gallery-item row-span-2 relative rounded-sm overflow-hidden" data-reveal data-delay="1">
+        <img src={images[0].url} alt={images[0].label} class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-5">
+          <span class="text-white font-heading font-bold">{images[0].label}</span>
+        </div>
+      </div>
+
+      <!-- Top middle -->
+      <div class="gallery-item relative rounded-sm overflow-hidden" data-reveal data-delay="2">
+        <img src={images[1].url} alt={images[1].label} class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <span class="text-white font-heading font-bold text-sm">{images[1].label}</span>
+        </div>
+      </div>
+
+      <!-- Top right -->
+      <div class="gallery-item relative rounded-sm overflow-hidden" data-reveal data-delay="3">
+        <img src={images[2].url} alt={images[2].label} class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <span class="text-white font-heading font-bold text-sm">{images[2].label}</span>
+        </div>
+      </div>
+
+      <!-- Bottom middle -->
+      <div class="gallery-item relative rounded-sm overflow-hidden" data-reveal data-delay="4">
+        <img src={images[3].url} alt={images[3].label} class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <span class="text-white font-heading font-bold text-sm">{images[3].label}</span>
+        </div>
+      </div>
+
+      <!-- Bottom right -->
+      <div class="gallery-item relative rounded-sm overflow-hidden" data-reveal data-delay="5">
+        <img src={images[4].url} alt={images[4].label} class="w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+          <span class="text-white font-heading font-bold text-sm">{images[4].label}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

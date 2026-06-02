@@ -1,0 +1,56 @@
+---
+---
+<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-5 transition-all duration-300" id="navbar">
+  <a href="/" class="font-display text-2xl tracking-widest text-white">
+    BARBER<span class="text-brand-orange">ELITE</span>
+  </a>
+  <ul class="hidden md:flex items-center gap-8 text-xs font-medium tracking-widest uppercase text-gray-300">
+    <li><a href="#servicios" class="hover:text-brand-orange transition-colors">Servicios</a></li>
+    <li><a href="#galeria" class="hover:text-brand-orange transition-colors">Galería</a></li>
+    <li><a href="#ubicacion" class="hover:text-brand-orange transition-colors">Ubicación</a></li>
+  </ul>
+  <a href="#agendar" class="btn-primary hidden md:block">Agendar cita</a>
+
+  <!-- Mobile hamburger -->
+  <button id="menu-btn" class="md:hidden flex flex-col gap-1.5 p-1">
+    <span class="w-6 h-0.5 bg-white block transition-all"></span>
+    <span class="w-6 h-0.5 bg-white block transition-all"></span>
+    <span class="w-6 h-0.5 bg-white block transition-all"></span>
+  </button>
+</nav>
+
+<!-- Mobile menu -->
+<div id="mobile-menu" class="fixed inset-0 bg-brand-dark z-40 flex flex-col items-center justify-center gap-8 -translate-y-full transition-transform duration-500 md:hidden">
+  <a href="#servicios" class="font-display text-4xl tracking-widest text-white mobile-link">Servicios</a>
+  <a href="#galeria" class="font-display text-4xl tracking-widest text-white mobile-link">Galería</a>
+  <a href="#ubicacion" class="font-display text-4xl tracking-widest text-white mobile-link">Ubicación</a>
+  <a href="#agendar" class="btn-primary mt-4 mobile-link">Agendar cita</a>
+</div>
+
+<script>
+  const navbar = document.getElementById('navbar');
+  const menuBtn = document.getElementById('menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 60) {
+      navbar?.classList.add('bg-brand-dark/95', 'backdrop-blur-md', 'border-b', 'border-brand-border', 'py-3');
+      navbar?.classList.remove('py-5');
+    } else {
+      navbar?.classList.remove('bg-brand-dark/95', 'backdrop-blur-md', 'border-b', 'border-brand-border', 'py-3');
+      navbar?.classList.add('py-5');
+    }
+  });
+
+  menuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('-translate-y-full');
+    mobileMenu?.classList.toggle('translate-y-0');
+  });
+
+  document.querySelectorAll('.mobile-link').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.add('-translate-y-full');
+      mobileMenu?.classList.remove('translate-y-0');
+    });
+  });
+</script>

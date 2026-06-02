@@ -1,0 +1,83 @@
+---
+const services = [
+  {
+    icon: 'content_cut',
+    name: 'Corte Signature',
+    description: 'Nuestro corte estrella: análisis de rostro, técnica personalizada, lavado y estilizado final con productos premium.',
+    price: 10,
+    tag: 'Popular',
+    featured: false,
+  },
+  {
+    icon: 'air',
+    name: 'Afeitado Toalla Caliente',
+    description: 'Experiencia clásica con navaja, toalla caliente, bálsamos y aceites artesanales para una piel impecable.',
+    price: 15,
+    tag: null,
+    featured: false,
+  },
+  {
+    icon: 'brush',
+    name: 'Diseño de Barba',
+    description: 'Perfilado y diseño a medida para una barba que define tu personalidad.',
+    price: 5,
+    tag: null,
+    featured: false,
+  },
+  {
+    icon: 'auto_awesome',
+    name: 'El Ritual Gentleman',
+    description: 'El paquete completo: corte premium, afeitado clásico, mascarilla facial, masaje de cuero cabelludo y estilizado.',
+    price: 20,
+    tag: 'Premium',
+    featured: true,
+  },
+];
+---
+<section class="py-24 px-8 max-w-7xl mx-auto" id="servicios">
+  <!-- Header -->
+  <div class="flex items-end justify-between mb-14" data-reveal>
+    <div>
+      <p class="text-brand-orange text-xs font-semibold tracking-[0.4em] uppercase mb-3">— Nuestros Servicios</p>
+      <h2 class="font-heading text-4xl md:text-5xl font-bold text-white">Servicios de <span class="italic text-brand-gold">Autor</span></h2>
+    </div>
+    <a href="#agendar" class="btn-primary hidden md:block">Reservar ahora</a>
+  </div>
+
+  <!-- Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {services.map((s, i) => (
+      <div
+        class={`service-card relative border border-brand-border rounded-sm p-7 flex flex-col gap-4 transition-all duration-300 hover:border-brand-orange/50 group ${s.featured ? 'bg-brand-orange/5' : 'bg-brand-card'}`}
+        data-reveal
+        data-delay={i + 1}
+      >
+        {s.tag && (
+          <span class={`absolute top-5 right-5 text-[10px] font-semibold tracking-widest uppercase px-2.5 py-1 rounded-full ${s.featured ? 'bg-brand-orange text-white' : 'bg-brand-gold/20 text-brand-gold border border-brand-gold/30'}`}>
+            {s.tag}
+          </span>
+        )}
+
+        <div class="flex items-start gap-4">
+          <span class={`material-icons service-icon text-2xl transition-all duration-300 ${s.featured ? 'text-brand-orange' : 'text-gray-500'}`}>
+            {s.icon}
+          </span>
+          <div>
+            <p class="text-xs text-gray-500 tracking-widest uppercase mb-1">{s.icon}</p>
+            <h3 class="font-heading text-xl font-bold text-white group-hover:text-brand-orange transition-colors">{s.name}</h3>
+          </div>
+        </div>
+
+        <p class="text-sm text-gray-400 leading-relaxed">{s.description}</p>
+
+        <div class="flex items-center justify-between mt-auto pt-4 border-t border-brand-border/50">
+          <span class="font-display text-3xl text-white">${s.price}</span>
+          <a href="#agendar" class="text-xs font-semibold tracking-widest uppercase text-brand-orange flex items-center gap-1.5 hover:gap-3 transition-all">
+            Agendar
+            <span class="material-icons text-sm">arrow_forward</span>
+          </a>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
