@@ -101,7 +101,7 @@ const { title = "Legend barber — Cortes Premium" } = Astro.props;
         if (entry.isIntersecting) {
           setTimeout(() => {
             entry.target.classList.add('revealed');
-          }, (entry.target.dataset.delay || 0) * 100);
+          }, (Number((entry.target as HTMLElement).dataset.delay) || 0) * 100);
           observer.unobserve(entry.target);
         }
       });
