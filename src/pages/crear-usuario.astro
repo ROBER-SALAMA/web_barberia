@@ -1,0 +1,118 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Crear cuenta - Legend Barber">
+  <Navbar />
+  <main class="min-h-screen pt-32 pb-20 px-8 bg-brand-dark">
+    <section class="max-w-5xl mx-auto grid grid-cols-1 lg:grid-cols-[0.85fr_1.15fr] gap-10 items-center">
+      <div data-reveal>
+        <p class="text-brand-orange text-xs font-semibold tracking-[0.4em] uppercase mb-4">- Cuenta</p>
+        <h1 class="font-display text-6xl md:text-8xl text-white leading-none mb-6">
+          CREA TU<br />
+          <span class="text-brand-orange">PERFIL</span>
+        </h1>
+        <p class="text-gray-400 leading-relaxed max-w-md">
+          Guarda tus datos para reservar mas rapido y continuar con la seleccion de servicio, barbero, fecha y hora.
+        </p>
+      </div>
+
+      <form
+        id="user-form"
+        class="bg-brand-card border border-brand-border rounded-sm p-7 md:p-9 space-y-5"
+        data-reveal
+        data-delay="1"
+      >
+        <div>
+          <label for="name" class="block text-xs text-gray-500 tracking-widest uppercase mb-2">Nombre</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            value="carlos"
+            required
+            class="w-full bg-brand-dark border border-brand-border text-white placeholder-gray-600 px-5 py-3.5 text-sm rounded-sm focus:outline-none focus:border-brand-orange transition-colors"
+          />
+        </div>
+
+        <div>
+          <label for="email" class="block text-xs text-gray-500 tracking-widest uppercase mb-2">Email</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            value="carlos@gmail.com"
+            required
+            class="w-full bg-brand-dark border border-brand-border text-white placeholder-gray-600 px-5 py-3.5 text-sm rounded-sm focus:outline-none focus:border-brand-orange transition-colors"
+          />
+        </div>
+
+        <div>
+          <label for="password" class="block text-xs text-gray-500 tracking-widest uppercase mb-2">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value="123"
+            required
+            class="w-full bg-brand-dark border border-brand-border text-white placeholder-gray-600 px-5 py-3.5 text-sm rounded-sm focus:outline-none focus:border-brand-orange transition-colors"
+          />
+        </div>
+
+        <input id="role" name="role" type="hidden" value="cliente" />
+
+        <button id="submit-user" type="submit" class="btn-primary w-full">Crear cuenta</button>
+        <p id="user-message" class="min-h-5 text-sm text-gray-400"></p>
+      </form>
+    </section>
+  </main>
+  <Footer />
+
+  <script>
+    const form = document.getElementById('user-form');
+    const button = document.getElementById('submit-user');
+    const message = document.getElementById('user-message');
+
+    form?.addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const data = new FormData(form);
+      const payload = {
+        name: String(data.get('name') || ''),
+        email: String(data.get('email') || ''),
+        password: String(data.get('password') || ''),
+        role: 'cliente',
+      };
+
+      button.disabled = true;
+      button.textContent = 'Creando cuenta...';
+      message.textContent = '';
+
+      try {
+        const response = await fetch('http://localhost:3000/api/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error('No se pudo crear el usuario');
+        }
+
+        const createdUser = await response.json().catch(() => payload);
+        const user = { ...payload, ...createdUser };
+
+        localStorage.setItem('legendBarberUser', JSON.stringify(user));
+        window.location.href = '/crear-cita';
+      } catch (error) {
+        message.textContent = error instanceof Error ? error.message : 'Error al crear el usuario';
+        message.className = 'min-h-5 text-sm text-red-400';
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Crear cuenta';
+      }
+    });
+  </script>
+</Layout>

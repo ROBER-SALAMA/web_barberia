@@ -1,0 +1,355 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Crear cita - Legend Barber">
+  <Navbar />
+  <main class="min-h-screen pt-32 pb-20 px-8 bg-brand-dark">
+    <section class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12" data-reveal>
+        <div>
+          <p class="text-brand-orange text-xs font-semibold tracking-[0.4em] uppercase mb-4">- Reservas</p>
+          <h1 class="font-display text-6xl md:text-8xl text-white leading-none">
+            CREA TU<br />
+            <span class="text-brand-orange">CITA</span>
+          </h1>
+        </div>
+        <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+          Selecciona servicio, barbero, fecha y hora. El resumen se actualiza antes de confirmar.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-6">
+        <form id="appointment-form" class="space-y-6">
+          <section class="bg-brand-card border border-brand-border rounded-sm p-6 md:p-8" data-reveal data-delay="1">
+            <div class="flex items-center justify-between gap-4 mb-6">
+              <h2 class="font-heading text-2xl font-bold text-white">Servicios</h2>
+              <span id="services-status" class="text-xs text-gray-500 tracking-widest uppercase">Cargando</span>
+            </div>
+            <div id="services-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </section>
+
+          <section class="bg-brand-card border border-brand-border rounded-sm p-6 md:p-8" data-reveal data-delay="2">
+            <div class="flex items-center justify-between gap-4 mb-6">
+              <h2 class="font-heading text-2xl font-bold text-white">Barberos</h2>
+              <span id="barbers-status" class="text-xs text-gray-500 tracking-widest uppercase">Cargando</span>
+            </div>
+            <div id="barbers-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+          </section>
+
+          <section class="grid grid-cols-1 gap-6" data-reveal data-delay="3">
+            <div class="bg-brand-card border border-brand-border rounded-sm p-6">
+              <label for="date" class="block text-xs text-gray-500 tracking-widest uppercase mb-3">Fecha</label>
+              <input
+                id="date"
+                type="date"
+                required
+                class="w-full bg-brand-dark border border-brand-border text-white px-5 py-3.5 text-sm rounded-sm focus:outline-none focus:border-brand-orange transition-colors"
+              />
+            </div>
+          </section>
+
+          <section class="bg-brand-card border border-brand-border rounded-sm p-6 md:p-8" data-reveal data-delay="4">
+            <h2 class="font-heading text-2xl font-bold text-white mb-6">Horario disponible</h2>
+            <div id="time-slots" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3"></div>
+          </section>
+        </form>
+
+        <aside class="bg-brand-card border border-brand-border rounded-sm p-6 md:p-8 h-fit lg:sticky lg:top-28" data-reveal data-delay="5">
+          <p class="text-brand-orange text-xs font-semibold tracking-[0.35em] uppercase mb-4">Resumen</p>
+          <h2 class="font-heading text-3xl font-bold text-white mb-8">Tu cita</h2>
+
+          <div class="space-y-5 text-sm">
+            <div class="flex justify-between gap-4 border-b border-brand-border/60 pb-4">
+              <span class="text-gray-500">Cliente</span>
+              <span id="summary-user" class="text-white text-right">Sin usuario</span>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-brand-border/60 pb-4">
+              <span class="text-gray-500">Servicios</span>
+              <span id="summary-service" class="text-white text-right">Selecciona uno o mas</span>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-brand-border/60 pb-4">
+              <span class="text-gray-500">Barbero</span>
+              <span id="summary-barber" class="text-white text-right">Selecciona uno</span>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-brand-border/60 pb-4">
+              <span class="text-gray-500">Fecha</span>
+              <span id="summary-date" class="text-white text-right">Sin fecha</span>
+            </div>
+            <div class="flex justify-between gap-4 border-b border-brand-border/60 pb-4">
+              <span class="text-gray-500">Hora</span>
+              <span id="summary-time" class="text-white text-right">Sin hora</span>
+            </div>
+            <div class="flex justify-between items-end gap-4 pt-2">
+              <span class="text-gray-500">Total</span>
+              <span id="summary-total" class="font-display text-4xl text-brand-orange">$0.00</span>
+            </div>
+          </div>
+
+          <button id="create-appointment" type="button" class="btn-primary w-full mt-8">Crear cita</button>
+          <p id="appointment-message" class="min-h-5 text-sm text-gray-400 mt-4"></p>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <Footer />
+
+  <script>
+    const endpoints = {
+      services: 'http://localhost:3000/api/services',
+      barbers: 'http://localhost:3000/api/barbers',
+      appointments: 'http://localhost:3000/api/appointments',
+    };
+
+    const fallbackServices = [
+      { id: 1, name: 'servicon 1', description: 'servicio 1', price: '1.00', duration: '40.00' },
+      { id: 2, name: 'servicon 2', description: 'servicio 2', price: '1.00', duration: '40.00' },
+    ];
+    const fallbackBarbers = [{ id: 1, name: 'messi', specialty: null }];
+    const slots = ['09:00', '09:40', '10:20', '11:00', '11:40', '13:00', '13:40', '14:30', '15:10', '15:50', '16:30', '17:10'];
+
+    const state = {
+      user: null,
+      services: [],
+      barbers: [],
+      selectedServiceIds: [],
+      selectedBarberId: null,
+      date: '',
+      time: '',
+    };
+
+    const servicesList = document.getElementById('services-list');
+    const servicesStatus = document.getElementById('services-status');
+    const barbersList = document.getElementById('barbers-list');
+    const barbersStatus = document.getElementById('barbers-status');
+    const dateInput = document.getElementById('date');
+    const timeSlots = document.getElementById('time-slots');
+    const createButton = document.getElementById('create-appointment');
+    const message = document.getElementById('appointment-message');
+
+    const summaryUser = document.getElementById('summary-user');
+    const summaryService = document.getElementById('summary-service');
+    const summaryBarber = document.getElementById('summary-barber');
+    const summaryDate = document.getElementById('summary-date');
+    const summaryTime = document.getElementById('summary-time');
+    const summaryTotal = document.getElementById('summary-total');
+
+    function money(value) {
+      return `$${Number(value || 0).toFixed(2)}`;
+    }
+
+    function getSelectedServices() {
+      return state.services.filter((service) => state.selectedServiceIds.includes(Number(service.id)));
+    }
+
+    function getSelectedBarber() {
+      return state.barbers.find((barber) => Number(barber.id) === Number(state.selectedBarberId));
+    }
+
+    function updateSummary() {
+      const services = getSelectedServices();
+      const barber = getSelectedBarber();
+      const total = services.reduce((sum, service) => sum + Number(service.price || 0), 0);
+
+      summaryUser.textContent = (state.user && state.user.name) || 'Sin usuario';
+      summaryService.textContent = services.length ? services.map((service) => service.name).join(', ') : 'Selecciona uno o mas';
+      summaryBarber.textContent = barber ? barber.name : 'Selecciona uno';
+      summaryDate.textContent = state.date || 'Sin fecha';
+      summaryTime.textContent = state.time || 'Sin hora';
+      summaryTotal.textContent = money(total);
+    }
+
+    function renderServices() {
+      servicesList.innerHTML = state.services.map((service) => {
+        const serviceId = Number(service.id);
+        const checked = state.selectedServiceIds.includes(serviceId);
+
+        return `
+          <label class="service-option block border ${checked ? 'border-brand-orange bg-brand-orange/10' : 'border-brand-border bg-brand-dark'} rounded-sm p-5 cursor-pointer transition-all hover:border-brand-orange/70">
+            <div class="flex items-start gap-4">
+              <input type="checkbox" name="service" value="${service.id}" ${checked ? 'checked' : ''} class="mt-1 h-4 w-4 accent-brand-orange" />
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-4">
+                  <h3 class="font-heading text-xl font-bold text-white">${service.name}</h3>
+                  <span class="font-display text-3xl text-brand-orange">${money(service.price)}</span>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed mt-2">${service.description || ''}</p>
+                <p class="text-xs text-gray-500 tracking-widest uppercase mt-4">${service.duration || 0} min</p>
+              </div>
+            </div>
+          </label>
+        `;
+      }).join('');
+
+      servicesList.querySelectorAll('input[name="service"]').forEach((input) => {
+        input.addEventListener('change', () => {
+          const serviceId = Number(input.value);
+
+          if (input.checked) {
+            state.selectedServiceIds = [...state.selectedServiceIds, serviceId];
+          } else {
+            state.selectedServiceIds = state.selectedServiceIds.filter((id) => id !== serviceId);
+          }
+
+          renderServices();
+          updateSummary();
+        });
+      });
+    }
+
+    function renderBarbers() {
+      barbersList.innerHTML = state.barbers.map((barber) => {
+        const checked = Number(barber.id) === Number(state.selectedBarberId);
+
+        return `
+          <label class="barber-option block border ${checked ? 'border-brand-orange bg-brand-orange/10' : 'border-brand-border bg-brand-dark'} rounded-sm p-5 cursor-pointer transition-all hover:border-brand-orange/70">
+            <div class="flex items-start gap-4">
+              <input type="radio" name="barber" value="${barber.id}" ${checked ? 'checked' : ''} class="mt-1 h-4 w-4 accent-brand-orange" />
+              <div class="flex-1">
+                <div class="flex items-start justify-between gap-4">
+                  <h3 class="font-heading text-xl font-bold text-white">${barber.name}</h3>
+                  <span class="material-icons text-brand-orange">content_cut</span>
+                </div>
+                <p class="text-sm text-gray-400 leading-relaxed mt-2">${barber.specialty || 'Barbero disponible'}</p>
+              </div>
+            </div>
+          </label>
+        `;
+      }).join('');
+
+      barbersList.querySelectorAll('input[name="barber"]').forEach((input) => {
+        input.addEventListener('change', () => {
+          state.selectedBarberId = Number(input.value);
+          renderBarbers();
+          updateSummary();
+        });
+      });
+    }
+
+    function renderSlots() {
+      timeSlots.innerHTML = slots.map((slot) => {
+        const active = slot === state.time;
+
+        return `
+          <button type="button" data-time="${slot}" class="time-slot border ${active ? 'border-brand-orange bg-brand-orange text-white' : 'border-brand-border bg-brand-dark text-gray-300'} rounded-sm px-4 py-3 text-sm font-semibold transition-all hover:border-brand-orange hover:text-white">
+            ${slot}
+          </button>
+        `;
+      }).join('');
+
+      timeSlots.querySelectorAll('.time-slot').forEach((button) => {
+        button.addEventListener('click', () => {
+          state.time = button.getAttribute('data-time') || '';
+          renderSlots();
+          updateSummary();
+        });
+      });
+    }
+
+    async function fetchList(url, fallback) {
+      try {
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error('Request failed');
+        }
+
+        return await response.json();
+      } catch (error) {
+        return fallback;
+      }
+    }
+
+    async function boot() {
+      const storedUser = localStorage.getItem('legendBarberUser');
+      state.user = storedUser ? JSON.parse(storedUser) : null;
+
+      if (!state.user) {
+        window.location.href = '/crear-usuario';
+        return;
+      }
+
+      const today = new Date().toISOString().slice(0, 10);
+      dateInput.min = today;
+      dateInput.value = '2026-06-15';
+      state.date = dateInput.value;
+
+      const lists = await Promise.all([
+        fetchList(endpoints.services, fallbackServices),
+        fetchList(endpoints.barbers, fallbackBarbers),
+      ]);
+
+      state.services = lists[0];
+      state.barbers = lists[1];
+      state.selectedServiceIds = state.services[0] ? [Number(state.services[0].id)] : [];
+      state.selectedBarberId = state.barbers[0] ? state.barbers[0].id : null;
+      state.time = '14:30';
+
+      servicesStatus.textContent = `${state.services.length} disponibles`;
+      barbersStatus.textContent = `${state.barbers.length} disponibles`;
+      renderServices();
+      renderBarbers();
+      renderSlots();
+      updateSummary();
+    }
+
+    dateInput.addEventListener('change', () => {
+      state.date = dateInput.value;
+      updateSummary();
+    });
+
+    createButton.addEventListener('click', async () => {
+      const userId = (state.user && state.user.id) || 1;
+      const services = getSelectedServices();
+      const barber = getSelectedBarber();
+
+      if (!services.length || !barber || !state.date || !state.time) {
+        message.textContent = 'Completa servicios, barbero, fecha y hora.';
+        message.className = 'min-h-5 text-sm text-red-400 mt-4';
+        return;
+      }
+
+      const selectedServiceIds = services.map((service) => Number(service.id));
+      const payload = {
+        userId: Number(userId),
+        barberId: Number(barber.id),
+        serviceId: selectedServiceIds[0],
+        date: state.date,
+        time: state.time,
+        status: 'en_proceso',
+        services: selectedServiceIds,
+      };
+
+      createButton.disabled = true;
+      createButton.textContent = 'Creando cita...';
+      message.textContent = '';
+
+      try {
+        const response = await fetch(endpoints.appointments, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+          throw new Error('No se pudo crear la cita');
+        }
+
+        const appointment = await response.json().catch(() => payload);
+        localStorage.setItem('legendBarberAppointment', JSON.stringify({ ...payload, ...appointment }));
+        message.textContent = 'Cita creada correctamente.';
+        message.className = 'min-h-5 text-sm text-brand-orange mt-4';
+      } catch (error) {
+        message.textContent = error instanceof Error ? error.message : 'Error al crear la cita';
+        message.className = 'min-h-5 text-sm text-red-400 mt-4';
+      } finally {
+        createButton.disabled = false;
+        createButton.textContent = 'Crear cita';
+      }
+    });
+
+    boot();
+  </script>
+</Layout>
