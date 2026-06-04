@@ -1,27 +1,104 @@
 ---
+
 ---
-<section class="py-24 px-8 relative overflow-hidden" id="agendar">
-  <div class="absolute inset-0 bg-brand-orange/5 border-y border-brand-orange/10"></div>
-  <div class="absolute -left-20 -top-20 w-80 h-80 rounded-full bg-brand-orange/5 blur-3xl"></div>
-  <div class="absolute -right-20 -bottom-20 w-80 h-80 rounded-full bg-brand-orange/5 blur-3xl"></div>
 
-  <div class="relative max-w-4xl mx-auto text-center" data-reveal>
-    <p class="text-brand-orange text-xs font-semibold tracking-[0.4em] uppercase mb-4">- Reservas</p>
-    <h2 class="font-display text-6xl md:text-8xl text-white mb-6 leading-none">
-      TU PROXIMA<br />
-      <span class="text-brand-orange">CITA</span>
+<section class="py-32 px-6 relative overflow-hidden" id="agendar">
+  <!-- Fondo -->
+  <div
+    class="absolute inset-0 bg-gradient-to-b from-transparent via-brand-orange/5 to-transparent"
+  >
+  </div>
+
+  <div
+    class="absolute left-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl"
+  >
+  </div>
+
+  <div
+    class="absolute right-0 top-1/2 -translate-y-1/2 w-96 h-96 bg-brand-orange/10 rounded-full blur-3xl"
+  >
+  </div>
+
+  <div
+    class="relative max-w-5xl mx-auto bg-zinc-900/60 backdrop-blur-md border border-zinc-800 rounded-[32px] p-10 md:p-16 text-center shadow-2xl"
+    data-reveal
+  >
+    <div
+      class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-orange/20 bg-brand-orange/10 mb-8"
+    >
+      <div class="w-2 h-2 rounded-full bg-brand-orange"></div>
+      <span
+        class="text-brand-orange text-xs font-semibold tracking-[0.3em] uppercase"
+      >
+        Reservas Online
+      </span>
+    </div>
+
+    <h2
+      class="font-display text-5xl md:text-7xl lg:text-8xl text-white leading-none mb-8"
+    >
+      TU PRÓXIMA<br />
+      <span class="text-brand-orange">EXPERIENCIA</span>
     </h2>
-    <p class="text-gray-400 text-base max-w-md mx-auto mb-10 leading-relaxed">
-      Reserva tu lugar ahora y experimenta el nivel de servicio que mereces. Sin filas, sin esperas.
+
+    <p class="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed mb-10">
+      Reserva tu cita en segundos y disfruta de un servicio diseñado para
+      quienes valoran la excelencia, la puntualidad y el estilo.
     </p>
 
-    <a href="/crear-usuario" class="btn-primary inline-flex items-center justify-center whitespace-nowrap">
-      Crear cuenta y agendar
-    </a>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+      <a
+        id="btn-agendar"
+        href="/crear-usuario"
+        class="group inline-flex items-center gap-3 px-8 py-4 bg-brand-orange hover:bg-orange-500 text-black font-semibold rounded-xl transition-all duration-300 hover:scale-105 hover:shadow-[0_0_40px_rgba(249,115,22,0.35)]"
+      >
+        Reservar ahora
 
-    <p class="text-xs text-gray-600 mt-4">
-      O llamanos directamente al
-      <a href="tel:+50322345678" class="text-brand-orange hover:underline">+503 2234-5678</a>
-    </p>
+        <svg
+          class="w-5 h-5 transition-transform group-hover:translate-x-1"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+
+    </div>
+
+    <div
+      class="mt-10 pt-8 border-t border-zinc-800 flex flex-col md:flex-row justify-center gap-8 text-sm text-gray-500"
+    >
+      <div>✓ Confirmación inmediata</div>
+      <div>✓ Sin filas ni esperas</div>
+      <div>✓ Horarios flexibles</div>
+    </div>
   </div>
 </section>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const btnAgendar = document.getElementById("btn-agendar");
+
+    if (!btnAgendar) return;
+
+    try {
+      const userData = localStorage.getItem("legendBarberUser");
+
+      if (!userData) return;
+
+      const session = JSON.parse(userData);
+
+      if (session?.user?.id && session?.token) {
+        btnAgendar.href = "/crear-cita";
+        btnAgendar.textContent = "Agendar cita";
+      }
+    } catch (error) {
+      console.error("Error leyendo sesión:", error);
+    }
+  });
+</script>
